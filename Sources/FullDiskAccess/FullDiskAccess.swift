@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import UniformTypeIdentifiers
 import OSLog
 
 // A helper for managing Full Disk Access (FDA). An app that's granted FDA can access other apps' containers.
@@ -98,30 +99,10 @@ public enum FullDiskAccess {
         let alert = NSAlert()
         alert.messageText = title
         alert.informativeText = message
+        alert.icon = icon ?? alertIcon()
 
         if canBeSuppressed {
             alert.showsSuppressionButton = true
-        }
-
-        if let icon {
-            alert.icon = icon
-        } else if let appIconImage = NSApp.applicationIconImage {
-            // Draw the app icon with an info icon as a badge
-            let appIconInset: CGFloat = 4
-            let infoIconScale: CGFloat = 0.45
-            alert.icon = NSImage(size: appIconImage.size, flipped: false) { drawRect in
-                appIconImage.draw(in: drawRect.insetBy(dx: appIconInset, dy: appIconInset))
-                let badgeRect = NSRect(
-                    x: drawRect.width - (drawRect.width * infoIconScale),
-                    y: 0,
-                    width: drawRect.width * infoIconScale,
-                    height: drawRect.height * infoIconScale
-                )
-                NSImage(named: "NSInfo")?.draw(in: badgeRect)
-                return true
-            }
-        } else {
-            alert.icon = NSImage(named: "NSInfo")
         }
 
         alert.addButton(withTitle: settingsButtonTitle)
@@ -169,6 +150,47 @@ extension FullDiskAccess {
         guard let pw = getpwuid(getuid()) else { return path }
         let homeURL = URL(fileURLWithFileSystemRepresentation: pw.pointee.pw_dir, isDirectory: true, relativeTo: nil)
         return path.replacingOccurrences(of: "~", with: homeURL.path)
+    }
+
+    private static func alertIcon() -> NSImage? {
+        guard let appIconImage = NSApp.applicationIconImage else {
+            return NSImage(named: "NSInfo")
+        }
+
+        // Draw the app icon with a badge (privacy icon or info icon if unavailable)
+        let appIconInset: CGFloat = 4
+        let badgeImage: NSImage?
+        let badgeSize: CGSize?
+        let badgeDrawingScale: CGFloat
+
+        if #available(macOS 13.0, *), let privacyPrefPaneType = UTType("com.apple.graphic-icon.privacy") {
+            let privacyIcon = NSWorkspace.shared.icon(for: privacyPrefPaneType)
+            badgeImage = privacyIcon
+            badgeSize = privacyIcon.size
+            badgeDrawingScale = 1.8
+        } else {
+            badgeImage = NSImage(named: "NSInfo")
+            badgeSize = nil
+            badgeDrawingScale = 0.45
+        }
+
+        return NSImage(size: appIconImage.size, flipped: false) { drawRect in
+            appIconImage.draw(in: drawRect.insetBy(dx: appIconInset, dy: appIconInset))
+
+            // Draw the badge
+            if let badgeImage {
+                let size = badgeSize ?? drawRect.size
+                let badgeRect = NSRect(
+                    x: drawRect.size.width - (size.width * badgeDrawingScale),
+                    y: 0,
+                    width: size.width * badgeDrawingScale,
+                    height: size.height * badgeDrawingScale
+                )
+                badgeImage.draw(in: badgeRect)
+            }
+
+            return true
+        }
     }
 }
 
