@@ -41,9 +41,9 @@ FullDiskAccess.promptIfNotGranted(
 )
 ```
 
-<img width="360" src="https://github.com/inket/FullDiskAccess/assets/679224/c804dc27-a04b-42eb-b910-1b2324f177d2">
+<img width="300" src="https://github.com/inket/FullDiskAccess/assets/679224/236b719d-2b4a-4f03-8aef-ba1d11e176c4">
 
-<img width="600" src="https://github.com/inket/FullDiskAccess/assets/679224/d52dab09-2974-45bd-807a-dc3f8edb8f55">
+<img width="480" src="https://github.com/inket/FullDiskAccess/assets/679224/d52dab09-2974-45bd-807a-dc3f8edb8f55">
 
 #### Other tasks
 
