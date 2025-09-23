@@ -75,7 +75,7 @@ public enum FullDiskAccess {
         message: String,
         settingsButtonTitle: String = "Open Settings",
         skipButtonTitle: String = "Later",
-        onSkip: (() -> Void)?,
+        onSkip: (() -> Void)? = nil,
         canBeSuppressed: Bool = false,
         icon: NSImage? = nil
     ) {
