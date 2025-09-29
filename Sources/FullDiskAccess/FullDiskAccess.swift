@@ -15,10 +15,16 @@ public enum FullDiskAccess {
         case monterey // 12
         case ventura // 13
         case sonoma // 14
+        case sequoia // 15
+        case tahoe // 26
     }
 
     private static var currentOS: MacOS {
-        if #available(macOS 14, *) {
+        if #available(macOS 26, *) {
+            return .tahoe
+        } else if #available(macOS 15, *) {
+            return .sequoia
+        } else if #available(macOS 14, *) {
             return .sonoma
         } else if #available(macOS 13, *) {
             return .ventura
@@ -44,7 +50,7 @@ public enum FullDiskAccess {
         let checkPath: String
 
         switch currentOS {
-        case .monterey, .ventura, .sonoma:
+        case .monterey, .ventura, .sonoma, .sequoia, .tahoe:
             checkPath = "~/Library/Containers/com.apple.stocks"
         case .mojave, .catalina, .bigSur:
             checkPath = "~/Library/Safari"
