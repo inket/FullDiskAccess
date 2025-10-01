@@ -75,6 +75,7 @@ public enum FullDiskAccess {
         message: String,
         settingsButtonTitle: String = "Open Settings",
         skipButtonTitle: String = "Later",
+        skipHandler: (() -> Void)? = nil,
         canBeSuppressed: Bool = false,
         icon: NSImage? = nil
     ) {
@@ -120,7 +121,7 @@ public enum FullDiskAccess {
             openSystemSettings()
         case .alertSecondButtonReturn:
             // Skip button
-            return
+            skipHandler?()
         default:
             return
         }
