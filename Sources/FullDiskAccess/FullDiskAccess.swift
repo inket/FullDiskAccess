@@ -54,7 +54,7 @@ public enum FullDiskAccess {
             _ = try FileManager.default.contentsOfDirectory(atPath: expandedPath(checkPath))
             os_log(.debug, log: .fullDiskAccess, "Full Disk Access is granted (able to read %@)", checkPath)
             return true
-        } catch let error {
+        } catch {
             os_log(.debug, log: .fullDiskAccess, "Full Disk Access is not granted (Unable to read %@)", checkPath)
             return false
         }
@@ -140,7 +140,7 @@ extension FullDiskAccess {
 
     private static var promptSuppressed: Bool {
         get {
-            UserDefaults.standard.bool(forKey: "fda_suppressed") ?? false
+            UserDefaults.standard.bool(forKey: "fda_suppressed")
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: "fda_suppressed")
