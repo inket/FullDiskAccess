@@ -36,6 +36,7 @@ FullDiskAccess.promptIfNotGranted(
     message: "MacSymbolicator requires Full Disk Access to search for DSYMs using Spotlight.",
     settingsButtonTitle: "Open Settings",
     skipButtonTitle: "Later",
+    skipHandler: { print("User skipped permission screen!") },
     canBeSuppressed: false, // `true` will display a "Do not ask again." checkbox and honor it
     icon: nil
 )
